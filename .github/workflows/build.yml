@@ -1,0 +1,54 @@
+# Имя нашего Workflow, которое будет отображаться на GitHub
+name: Java CI Build and Test
+
+# Триггер: запускать этот workflow при каждом push в ветку 'main'
+# или при создании Pull Request в ветку 'main'.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Определяем работы (jobs), которые будут выполняться
+jobs:
+  # Название нашей единственной работы
+  build:
+    # Доп. задание: Matrix по ОС.
+    # Эта работа будет запущена дважды, параллельно.
+    # Первый раз 'runner-os' будет 'ubuntu-latest', второй - 'windows-latest'.
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    # Указываем, на какой виртуальной машине запускать.
+    # Мы используем переменную из матрицы.
+    runs-on: ${{ matrix.os }}
+
+    # Шаги, которые будут выполнены в рамках работы
+    steps:
+      # Шаг 1: Клонирование репозитория
+      # 'uses' означает, что мы используем готовый Action от сообщества.
+      # actions/checkout@v4 - это стандартный action для скачивания кода.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Шаг 2: Установка Java (JDK 17)
+      # actions/setup-java@v4 - стандартный action для настройки Java.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Шаг 3: Предоставление прав на выполнение для gradlew (важно для Linux)
+      # 'if' гарантирует, что этот шаг выполнится только на Ubuntu.
+      - name: Grant execute permission for gradlew
+        if: runner.os == 'Linux'
+        run: chmod +x gradlew
+
+      # Шаг 4: Сборка и запуск тестов с помощью Gradle
+      # Мы используем './gradlew' (для Linux/macOS) или 'gradlew.bat' (для Windows)
+      # чтобы гарантировать, что используется версия Gradle из нашего проекта.
+      # Команда 'build' автоматически компилирует код, запускает тесты и собирает jar.
+      - name: Build and test with Gradle
+        run: ./gradlew build
