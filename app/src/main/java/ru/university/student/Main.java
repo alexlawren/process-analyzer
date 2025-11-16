@@ -1,11 +1,19 @@
 package ru.university.student;
 
-import ru.university.student.util.ConfigLoader; // Не забудьте импорт
+import ru.university.student.service.ProcessExecutor; // Импортируем
+
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        // Тестовый вывод для проверки
-        System.out.println("Режим сортировки из файла: " + ConfigLoader.getProperty("sort.by"));
-        System.out.println("Имя процесса для поиска: " + ConfigLoader.getProperty("search.process.name"));
+        ProcessExecutor executor = new ProcessExecutor();
+        try {
+            System.out.println("Получаем список процессов...");
+            String processListOutput = executor.execute();
+            System.out.println(processListOutput);
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Не удалось получить список процессов: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
