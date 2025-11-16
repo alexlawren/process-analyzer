@@ -36,5 +36,5 @@ public class ProcessInfo {
         return String.format("PID: %d, CPU: %.1f%%, MEM: %dMB, Name: %s",
                 pid, cpuUsage, memoryUsageMb, name);
     }
-    
+
 }
