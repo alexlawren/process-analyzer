@@ -1,0 +1,22 @@
+# Compiled class files
+*.class
+
+# Build directory
+/build/
+
+# Gradle-specific files
+.gradle/
+gradle-app.setting
+
+# IDE-specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Log files
+*.log
+
+# Configuration file as per lab requirement
+app.properties
