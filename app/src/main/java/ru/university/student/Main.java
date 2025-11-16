@@ -14,29 +14,42 @@ public class Main {
     public static void main(String[] args) {
         try {
             // Этап 1: Получение и парсинг данных
+            System.out.println("Получение списка системных процессов...");
             ProcessExecutor executor = new ProcessExecutor();
             ProcessParser parser = ProcessParser.create();
             List<ProcessInfo> processes = parser.parse(executor.execute());
+            System.out.println("Найдено и обработано процессов: " + processes.size());
 
             // Этап 2: Создание сервиса с полученными данными
             ProcessService service = new ProcessService(processes);
 
             // Этап 3: Выполнение заданий и вывод результатов
-            System.out.println("--- Задание 1: Сортировка (согласно sort.by=" + ConfigLoader.getProperty("sort.by") + ") ---");
-            List<ProcessInfo> sortedProcesses = service.sortProcesses();
-            printTopN(sortedProcesses, 5);
+            // --- Задание 1: Сортировка ---
+            String sortBy = ConfigLoader.getProperty("sort.by");
+            System.out.println("\n--- Задание 1: Сортировка (согласно sort.by=" + sortBy + ") ---");
+            List<ProcessInfo> sortedProcesses = service.sortProcesses(sortBy);
+            printTopN(sortedProcesses, 5); // Выводим топ-5
 
-            System.out.println("\n--- Задание 2: Поиск PID (для search.process.name=" + ConfigLoader.getProperty("search.process.name") + ") ---");
-            Optional<Integer> foundPid = service.findProcessIdByName();
+            // --- Задание 2: Поиск PID ---
+            String processToSearch = ConfigLoader.getProperty("search.process.name");
+            System.out.println("\n--- Задание 2: Поиск PID (для search.process.name=" + processToSearch + ") ---");
+            Optional<Integer> foundPid = service.findProcessIdByName(processToSearch);
             foundPid.ifPresentOrElse(
                     pid -> System.out.println("Найден процесс с PID: " + pid),
-                    () -> System.out.println("Процесс не найден.")
+                    () -> System.out.println("Процесс '" + processToSearch + "' не найден.")
             );
 
+            // --- Задание 3: Фильтрация ---
+            double cpuThreshold = Double.parseDouble(ConfigLoader.getProperty("threshold.cpu.percent"));
+            long memThreshold = Long.parseLong(ConfigLoader.getProperty("threshold.memory.mb"));
             System.out.println("\n--- Задание 3: Фильтрация по порогам ---");
-            List<ProcessInfo> filteredProcesses = service.filterProcessesByThresholds();
-            System.out.println("Найдены процессы, потребляющие >" + ConfigLoader.getProperty("threshold.cpu.percent") + "% CPU или >" + ConfigLoader.getProperty("threshold.memory.mb") + "MB RAM:");
-            filteredProcesses.forEach(System.out::println);
+            System.out.println("Поиск процессов, потребляющих >" + cpuThreshold + "% CPU или >" + memThreshold + "MB RAM:");
+            List<ProcessInfo> filteredProcesses = service.filterProcessesByThresholds(cpuThreshold, memThreshold);
+            if (filteredProcesses.isEmpty()) {
+                System.out.println("Процессы, превышающие пороги, не найдены.");
+            } else {
+                filteredProcesses.forEach(System.out::println);
+            }
 
         } catch (IOException | InterruptedException e) {
             System.err.println("Ошибка выполнения системной команды: " + e.getMessage());
@@ -53,6 +66,7 @@ public class Main {
         if (processes.isEmpty()) {
             System.out.println("Список процессов пуст.");
         } else {
+            System.out.println("Топ " + Math.min(n, processes.size()) + " процессов:");
             processes.stream().limit(n).forEach(System.out::println);
         }
     }

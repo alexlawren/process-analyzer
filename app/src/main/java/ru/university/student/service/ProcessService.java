@@ -30,37 +30,26 @@ public class ProcessService {
      * с параметром 'sort.by' в app.properties.
      * @return новый отсортированный список процессов.
      */
-    public List<ProcessInfo> sortProcesses() {
-        String sortBy = ConfigLoader.getProperty("sort.by");
-
+    public List<ProcessInfo> sortProcesses(String sortBy) {
         Comparator<ProcessInfo> comparator;
-
         if ("CPU".equalsIgnoreCase(sortBy)) {
-            // Сортировка по убыванию CPU
             comparator = Comparator.comparing(ProcessInfo::getCpuUsage).reversed();
         } else if ("MEMORY".equalsIgnoreCase(sortBy)) {
-            // Сортировка по убыванию памяти
             comparator = Comparator.comparing(ProcessInfo::getMemoryUsageMb).reversed();
         } else {
-            // Если в конфиге что-то не то, просто возвращаем как есть
             return processes;
         }
-
-        return processes.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
+        return processes.stream().sorted(comparator).collect(Collectors.toList());
     }
+
 
     /**
      * Задание 2: Ищет PID процесса по имени, указанному
      * в 'search.process.name' в app.properties.
      * @return Optional, содержащий PID, если процесс найден, иначе пустой.
      */
-    public Optional<Integer> findProcessIdByName() {
-        String processName = ConfigLoader.getProperty("search.process.name");
-
+    public Optional<Integer> findProcessIdByName(String processName) {
         return processes.stream()
-                // Ищем первый процесс, имя которого (без учета регистра) содержит искомую строку
                 .filter(p -> p.getName().toLowerCase().contains(processName.toLowerCase()))
                 .map(ProcessInfo::getPid)
                 .findFirst();
@@ -71,12 +60,14 @@ public class ProcessService {
      * чем указано в порогах 'threshold.cpu.percent' и 'threshold.memory.mb'.
      * @return список процессов, превышающих хотя бы один из порогов.
      */
-    public List<ProcessInfo> filterProcessesByThresholds() {
-        double cpuThreshold = Double.parseDouble(ConfigLoader.getProperty("threshold.cpu.percent"));
-        long memThreshold = Long.parseLong(ConfigLoader.getProperty("threshold.memory.mb"));
-
+    public List<ProcessInfo> filterProcessesByThresholds(double cpuThreshold, long memThreshold) {
         return processes.stream()
                 .filter(p -> p.getCpuUsage() > cpuThreshold || p.getMemoryUsageMb() > memThreshold)
                 .collect(Collectors.toList());
+    }
+
+    // В ProcessService.java
+    public List<ProcessInfo> getProcesses() {
+        return processes;
     }
 }
