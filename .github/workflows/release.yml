@@ -1,0 +1,44 @@
+# Имя workflow
+name: Java CI Create Release
+
+# Триггер: запускать ТОЛЬКО когда создается новый тег,
+# который соответствует шаблону v*.*.* (например, v1.0.0, v1.2.34)
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    # Запускать будем только на Ubuntu, так как для релиза достаточно одной сборки
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Клонирование репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Шаг 2: Установка Java (JDK 17)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Шаг 3: Предоставление прав на выполнение для gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Шаг 4: Сборка проекта с помощью Gradle
+      # Команда 'build' создаст наш .jar файл в папке app/build/libs/
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      # Шаг 5: Создание Релиза и прикрепление артефакта
+      # Мы используем готовый Action, который делает всю магию за нас.
+      - name: Create Release and Upload Artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          # Имя файла, который мы хотим прикрепить.
+          # Используем glob-шаблон 'app/build/libs/*.jar', чтобы найти любой .jar в этой папке.
+          files: app/build/libs/*.jar
