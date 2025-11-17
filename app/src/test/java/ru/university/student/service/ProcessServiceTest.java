@@ -6,7 +6,6 @@ import ru.university.student.model.ProcessInfo;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 

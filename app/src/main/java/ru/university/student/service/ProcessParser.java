@@ -12,6 +12,7 @@ public interface ProcessParser {
 
     /**
      * Парсит строку с выводом команды и возвращает список информации о процессах.
+     *
      * @param output текстовый вывод команды (например, tasklist или ps aux).
      * @return список объектов ProcessInfo.
      */
@@ -19,6 +20,7 @@ public interface ProcessParser {
 
     /**
      * Фабричный метод для создания парсера, соответствующего текущей ОС.
+     *
      * @return экземпляр парсера для Windows или Linux.
      */
     static ProcessParser create() {
