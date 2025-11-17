@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="10.12.5">
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\Main.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\model\ProcessInfo.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\service\LinuxProcessParser.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\service\ProcessExecutor.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\service\ProcessParser.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\service\ProcessService.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\service\WindowsProcessParser.java">
+</file>
+<file name="D:\ipprpo\lr3\process-analyzer\app\src\main\java\ru\university\student\util\ConfigLoader.java">
+</file>
+</checkstyle>

@@ -1,7 +1,5 @@
 package ru.university.student.model;
 
-import java.util.Objects;
-
 public class ProcessInfo {
     private final int pid;
     private final String name;

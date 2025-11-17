@@ -1,7 +1,6 @@
 package ru.university.student.service;
 
 import ru.university.student.model.ProcessInfo;
-import ru.university.student.util.ConfigLoader;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Содержит основную бизнес-логику для обработки списка процессов:
  * сортировка, фильтрация и поиск.
+ *
  * @author Ваше Имя
  */
 public class ProcessService {
@@ -19,6 +19,7 @@ public class ProcessService {
 
     /**
      * Конструктор сервиса. Принимает на вход список процессов для обработки.
+     *
      * @param processes список объектов ProcessInfo.
      */
     public ProcessService(List<ProcessInfo> processes) {
@@ -28,6 +29,7 @@ public class ProcessService {
     /**
      * Задание 1: Сортирует процессы по CPU или памяти в соответствии
      * с параметром 'sort.by' в app.properties.
+     *
      * @return новый отсортированный список процессов.
      */
     public List<ProcessInfo> sortProcesses(String sortBy) {
@@ -46,6 +48,7 @@ public class ProcessService {
     /**
      * Задание 2: Ищет PID процесса по имени, указанному
      * в 'search.process.name' в app.properties.
+     *
      * @return Optional, содержащий PID, если процесс найден, иначе пустой.
      */
     public Optional<Integer> findProcessIdByName(String processName) {
@@ -58,6 +61,7 @@ public class ProcessService {
     /**
      * Задание 3: Фильтрует процессы, потребляющие больше ресурсов,
      * чем указано в порогах 'threshold.cpu.percent' и 'threshold.memory.mb'.
+     *
      * @return список процессов, превышающих хотя бы один из порогов.
      */
     public List<ProcessInfo> filterProcessesByThresholds(double cpuThreshold, long memThreshold) {
